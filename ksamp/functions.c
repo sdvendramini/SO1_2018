@@ -153,24 +153,14 @@ void printFileSystems(){
 		return;
 	}
 
-	puts("\n Sistemas de archivos soportados: ");
+	int contador = 0;
 	while(!feof(fileSystemsFile)) {
    		char *fileSystem = fgets(buffer, 50, fileSystemsFile);
 		if(fileSystem==NULL) { break; }
-		const char delim[2] = "	";
-		char *token = strtok(fileSystem, delim);
-		char *aux ;
-		while(token != NULL){
-			if (token != NULL){
-				aux = token;	//		fileSystem = token;
-			}
-			token = strtok(NULL, delim);		
-		}
-
-		printf("   %s",aux);				
+		contador ++;
 	}
+	printf("\n Cantidad de sistemas de archivos soportados: %i", contador);
 	puts("\n");
-	
 	fclose(fileSystemsFile);
 
 	return;
