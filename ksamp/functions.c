@@ -165,3 +165,31 @@ void printFileSystems(){
 
 	return;
 }
+
+void cpuTime(){
+	FILE* statFile;
+	char buffer[50];
+	statFile = fopen("/proc/stat","r");
+
+	if(statFile==NULL){
+		printf("No file stat file found");
+		fclose(statFile);
+		return;
+	}
+	char *stat = fgets(buffer,50,statFile);
+	int n=0;
+	char *token= strtok(stat," ");
+	while(token){
+		if(n==1){
+			puts("Tiempo de CPU utilizado para usuarios: ");
+			puts(token);}
+		if(n==3){
+			puts("Tiempo de CPU utilizado para sistema: ");
+			puts(token);}
+		if(n==4){
+			puts("Tiempo de CPU utilizado para procesos idle: ");
+			puts(token);}
+	    token = strtok(NULL, " ");
+	    n++;	
+	}
+}
