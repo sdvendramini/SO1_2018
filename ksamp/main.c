@@ -6,6 +6,9 @@ int main()
 	printHostname();
 	printDate();
 	printCpuInfo();
+	printKernelVersion();
+	printUpTime();
+	printFileSystems();
 	
 	return 0;
 }
