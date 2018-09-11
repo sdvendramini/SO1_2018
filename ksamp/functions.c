@@ -192,4 +192,17 @@ void cpuTime(){
 	    token = strtok(NULL, " ");
 	    n++;	
 	}
+
+	while(!feof(statFile)) {
+		char *line = fgets(buffer, 50, statFile);
+		if(line==NULL) { break; }
+
+		char *contexto;
+		if((contexto = strstr(line, "ctxt"))!= NULL){
+			token=strtok(contexto," ");
+			token= strtok(NULL, " ");
+			printf("%s", "Cantidad de cambios de contexto: " );
+			printf("%s", token);
+		}
+	}
 }
