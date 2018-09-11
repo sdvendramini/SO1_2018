@@ -5,3 +5,4 @@ extern void printKernelVersion(void);
 extern void printUpTime(void);
 extern void printFileSystems(void);
 extern void cpuTime(void);
+extern void initTime(void);
