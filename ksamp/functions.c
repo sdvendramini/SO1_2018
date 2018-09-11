@@ -193,3 +193,33 @@ void cpuTime(){
 	    n++;	
 	}
 }
+
+void initTime(void){
+
+	FILE* upTimeFile;
+	char buffer[50];
+	upTimeFile = fopen("/proc/uptime","r");
+
+	if(upTimeFile == NULL){
+		printf("No up time info file found!");
+		fclose(upTimeFile);
+		return;
+	}
+
+	char *upTime = fgets(buffer, 50, upTimeFile);
+	const char delim[2] = ".";
+	
+	if((upTime = strtok(upTime, delim))!= NULL){
+		int seconds = atoi(upTime);
+
+		time_t currentTime;
+		currentTime = time(NULL);
+
+		currentTime -= seconds;
+		printf("\n La fecha de inicio del sistema es: \n      %s \n", ctime(&currentTime));
+	}
+
+	fclose(upTimeFile);
+
+	return;
+}
