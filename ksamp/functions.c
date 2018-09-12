@@ -47,7 +47,7 @@ void printCpuInfo(void){
 
 	puts("\n Informacion del procesador: ");
 	while(!feof(cpuInfoFile)) {
-   		char *line = fgets(buffer, 50, cpuInfoFile);
+   		char *line = fgets(buffer, 60, cpuInfoFile);
 		if(line==NULL) { break; }
 
 		char *cpuType;
@@ -181,13 +181,13 @@ void cpuTime(){
 	char *token= strtok(stat," ");
 	while(token){
 		if(n==1){
-			puts("Tiempo de CPU utilizado para usuarios: ");
+			printf("%s","Tiempo de CPU utilizado para usuarios: ");
 			puts(token);}
 		if(n==3){
-			puts("Tiempo de CPU utilizado para sistema: ");
+			printf("%s","Tiempo de CPU utilizado para sistema: ");
 			puts(token);}
 		if(n==4){
-			puts("Tiempo de CPU utilizado para procesos idle: ");
+			printf("%s","Tiempo de CPU utilizado para procesos idle: ");
 			puts(token);}
 	    token = strtok(NULL, " ");
 	    n++;	
@@ -202,7 +202,7 @@ void cpuTime(){
 			token=strtok(contexto," ");
 			token= strtok(NULL, " ");
 			printf("%s", "Cantidad de cambios de contexto: " );
-			printf("%s", token);
+			printf("%s", token); // corregir salto de linea
 		}
 	}
 }
@@ -236,3 +236,60 @@ void initTime(void){
 
 	return;
 }
+
+void procCreated(void){
+	FILE* statFile;
+	char buffer[50];
+	statFile = fopen("/proc/stat","r");
+
+	if(statFile==NULL){
+		printf("No file stat file found");
+		fclose(statFile);
+		return;
+	}
+	while(!feof(statFile)) {
+		char *line = fgets(buffer, 50, statFile);
+		if(line==NULL) {
+			break;
+		}
+
+		char *procesos;
+		char *token;
+		if((procesos = strstr(line, "processes"))!= NULL){
+			token=strtok(procesos," ");
+			token= strtok(NULL, " ");
+			printf("%s", "Cantidad de procesos creados desde el inicio del sistema: " );
+			printf("%s", token); // corregir salto de linea
+		}
+	}
+}
+
+void memStat(void){
+	FILE* statMemory;
+	char buffer[50];
+	statMemory = fopen("/proc/meminfo","r");
+
+	if(statMemory==NULL){
+		printf("No file meminfo file found");
+		fclose(statMemory);
+		return;
+	}
+	while(!feof(statMemory)) {
+		char *line = fgets(buffer, 50, statMemory);
+		if(line==NULL) {
+			break;
+		}
+		char *memtotal;
+		if((memtotal = strstr(line, "MemTotal:"))!= NULL){
+			printf("%s", memtotal );
+		}
+
+		char *memdispon;
+		if((memdispon = strstr(line, "MemAvailable:"))!= NULL){
+			printf("%s", memdispon );
+			return;
+		}		
+	}
+
+}
+

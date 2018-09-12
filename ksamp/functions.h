@@ -6,3 +6,5 @@ extern void printUpTime(void);
 extern void printFileSystems(void);
 extern void cpuTime(void);
 extern void initTime(void);
+extern void procCreated(void);
+extern void memStat(void);
