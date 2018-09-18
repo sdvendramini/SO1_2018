@@ -7,7 +7,7 @@
 
 int main( int argc, char *argv[])
 {	
-	
+
 	printHostname();
 	printDate();
 	printCpuInfo();
@@ -45,7 +45,7 @@ int main( int argc, char *argv[])
 			do
 			{
    				printf("Espere %i segundos.\n", duration);				
-   				sleep(duration);   				
+   				sleep(duration);				
 				peticionesHDD();
    				memStat();
 				loadAvg();			

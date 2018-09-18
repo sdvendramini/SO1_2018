@@ -4,10 +4,12 @@
 #include <string.h>
 #include <stdlib.h>
 
-//Hostname
+/* Hostname */
 void printHostname(){
 	FILE* hostnameFile;
 	char buffer[50];
+	char *hostname;
+
 	hostnameFile = fopen("/proc/sys/kernel/hostname","r");
 
 	if(hostnameFile == NULL){
@@ -16,7 +18,8 @@ void printHostname(){
 		return;
 	}
 
-   	char *hostname = fgets(buffer, 50, hostnameFile);
+   	
+   	hostname = fgets(buffer, 50, hostnameFile);
    	printf("\n Hostname: %s ",hostname);
 	
 	fclose(hostnameFile);
@@ -24,7 +27,7 @@ void printHostname(){
 	return;
 }
 
-//Fecha y hora actual
+/*Fecha y hora actual */
 void printDate(){
 	time_t currentTime;
 	currentTime = time(NULL);
@@ -68,7 +71,7 @@ void printCpuInfo(void){
 	return;
 }
 
-//Versión del kernel
+/* Versión del kernel */
 void printKernelVersion(){
 	FILE* kernelFile;
 	char buffer[100];
@@ -95,8 +98,8 @@ void printKernelVersion(){
 	return;
 }
 
-//Cantidad de tiempo transcurrido desde que se 
-//inició el sistema operativo (formato ddD hh:mm:ss)
+/*Cantidad de tiempo transcurrido desde que se 
+inició el sistema operativo (formato ddD hh:mm:ss) */
 void printUpTime(){
 	FILE* upTimeFile;
 	char buffer[50];
@@ -327,8 +330,7 @@ void peticionesHDD(){
  * Imprime lista de promedios de carga de un minuto
  */
 void loadAvg(){
-	FILE* promCarga =fopen("/proc/loadavg", "r");
-	char buffer[50];
+	FILE* promCarga =fopen("/proc/loadavg", "r");	
 	float carga;
 	
 	if(promCarga==NULL){
