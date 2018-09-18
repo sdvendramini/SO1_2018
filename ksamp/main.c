@@ -1,5 +1,8 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <getopt.h>
+#include <unistd.h>
 #include "functions.h"
 
 int main( int argc, char *argv[])
@@ -10,25 +13,43 @@ int main( int argc, char *argv[])
 	printCpuInfo();
 	printKernelVersion();
 	printUpTime();
-	printFileSystems();
-	
-	const char *optionS = "-s";	
-	const char *optionL = "-l";
+	printFileSystems();	
 
-	if(argc > 1 ){  //https://poesiabinaria.net/2015/11/como-gestionar-los-parametros-de-nuestros-programas-con-getopt-en-c/
-		if(strcmp(argv[1], optionS)==0){
-			cpuTime();
+	int c;
+	int interval;
+	int duration;
+	/* variables globales de getopt */
+	extern char* optarg;
+	extern int optind;
+	extern int optopt;
+	extern int opterr;
+	opterr = 0;
+
+	while ((c = getopt (argc, argv, "sl")) != -1)
+    	switch (c){
+    	case 's':
+    		cpuTime();
 			initTime();
 			procCreated();
-		}
-		if(strcmp(argv[1], optionL)==0){
-			cpuTime();
+        	break;
+      	case 'l':      		
+	      	
+	      	duration = atoi(argv[optind]);
+	      	interval = atoi(argv[++optind]);
+	    	cpuTime();
 			initTime();
-			procCreated();
+			procCreated();			
 			memStat();
-		}
+			do
+			{
+   				printf("Espere %i segundos.\n", duration);				
+   				sleep(duration);   				
+   				memStat();			
+				interval -= duration;
+			} while ( interval > 0);
+					   		   
+        	break;
 	}
-	
 	return 0;
 	
 }
