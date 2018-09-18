@@ -8,3 +8,5 @@ extern void cpuTime(void);
 extern void initTime(void);
 extern void procCreated(void);
 extern void memStat(void);
+extern void peticionesHDD(void);
+extern void loadAvg(void);

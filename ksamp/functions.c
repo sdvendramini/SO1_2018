@@ -293,3 +293,51 @@ void memStat(void){
 
 }
 
+/**
+ * Imprime la cantidad de pedidos a disco
+ */
+void peticionesHDD(){
+	FILE* pedidosHDD =fopen("/proc/diskstats", "r");
+	char buffer[256];
+	char* matched;
+	unsigned int lecturas, escrituras, pedidos;
+	
+	if(pedidosHDD==NULL){
+		printf("No file diskstats found");
+		fclose(pedidosHDD);
+		return;
+	}
+	while(!feof(pedidosHDD)) {
+		char* line=fgets(buffer, 256, pedidosHDD);
+		if(line==NULL) {
+			break;
+		}
+		if((matched= strstr(line,"sda"))!=NULL){
+			break;
+		}
+	}
+	sscanf(matched, "sda %u", &lecturas);
+	sscanf(matched, "sda %*u %*u %*u %*u %u", &escrituras);
+	pedidos = escrituras + lecturas;
+	printf("Cantidad de pedidos al disco: %u\n", pedidos);	
+	return;
+}
+
+/**
+ * Imprime lista de promedios de carga de un minuto
+ */
+void loadAvg(){
+	FILE* promCarga =fopen("/proc/loadavg", "r");
+	char buffer[50];
+	float carga;
+	
+	if(promCarga==NULL){
+		printf("No file diskstats found");
+		fclose(promCarga);
+		return;
+	}
+	fscanf(promCarga, "%f", &carga);		
+	printf("Promedio de carga de un minuto: %f\n", carga);
+	fclose(promCarga);
+	return;
+}
