@@ -7,14 +7,6 @@
 
 int main( int argc, char *argv[])
 {	
-
-	printHostname();
-	printDate();
-	printCpuInfo();
-	printKernelVersion();
-	printUpTime();
-	printFileSystems();	
-
 	int c;
 	int interval;
 	int duration;
@@ -25,34 +17,29 @@ int main( int argc, char *argv[])
 	extern int opterr;
 	opterr = 0;
 
-	while ((c = getopt (argc, argv, "sl")) != -1)
+	parteB();
+	while ((c = getopt (argc, argv, "sl")) != -1){
     	switch (c){
     	case 's':
-    		cpuTime();
-			initTime();
-			procCreated();
+    		parteC();
         	break;
       	case 'l':      		
 	      	
 	      	duration = atoi(argv[optind]);
 	      	interval = atoi(argv[++optind]);
-	    	cpuTime();
-			initTime();
-			procCreated();			
-			peticionesHDD();
-			memStat();
-			loadAvg();			
+	    	parteC();
+	    	parteD();
 			do
 			{
-   				printf("Espere %i segundos.\n", duration);				
+   				printf("[Espere %i segundos]\n", duration);				
    				sleep(duration);				
-				peticionesHDD();
-   				memStat();
-				loadAvg();			
+				parteD();			
 				interval -= duration;
-			} while ( interval > 0);
-					   		   
+			} while ( interval > 0);		   		   
         	break;
+        default:
+        	printf("Las opciones posibles del programa son -s y -l con tiempos de duracion e intervalo.");
+		}
 	}
 	return 0;
 	

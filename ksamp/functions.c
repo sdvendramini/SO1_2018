@@ -4,12 +4,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-/* Hostname */
+/* Imprime en pantalla el Hostname del dispositivo*/
 void printHostname(){
 	FILE* hostnameFile;
 	char buffer[50];
 	char *hostname;
-
 	hostnameFile = fopen("/proc/sys/kernel/hostname","r");
 
 	if(hostnameFile == NULL){
@@ -18,25 +17,23 @@ void printHostname(){
 		return;
 	}
 
-   	
    	hostname = fgets(buffer, 50, hostnameFile);
    	printf("\n Hostname: %s ",hostname);
-	
 	fclose(hostnameFile);
-
 	return;
 }
 
-/*Fecha y hora actual */
+/*Imprime en pantalla fecha y hora actual*/
 void printDate(){
 	time_t currentTime;
 	currentTime = time(NULL);
 	printf("\n Fecha y hora actuales: \n %s \n", ctime(&currentTime));
-
 	return;
 }
 
-// Tipo y modelo de CPU
+/**
+*	Imprime en pantalla tipo y modelo de CPU
+*/
 void printCpuInfo(void){
 	FILE* cpuInfoFile;
 	char buffer[50];
@@ -48,9 +45,9 @@ void printCpuInfo(void){
 		return;
 	}
 
-	puts("\n Informacion del procesador: ");
+	puts("Informacion del procesador: ");
 	while(!feof(cpuInfoFile)) {
-   		char *line = fgets(buffer, 60, cpuInfoFile);
+   		char *line = fgets(buffer, 50, cpuInfoFile);
 		if(line==NULL) { break; }
 
 		char *cpuType;
@@ -60,18 +57,16 @@ void printCpuInfo(void){
 		char *cpuModel;
 		if((cpuModel = strstr(line, "model name"))!= NULL){
 			printf("   %s",cpuModel);
-			break;		//el break debe quedar en el ultimo parseo para que no se repita con cada nucleo.
+			break;
 		}
-	}
-	puts("\n");
-
-	
+	}	
 	fclose(cpuInfoFile);
-
 	return;
 }
 
-/* Versión del kernel */
+/**
+*	Imprime en pantalla la versión del kernel
+*/
 void printKernelVersion(){
 	FILE* kernelFile;
 	char buffer[100];
@@ -83,23 +78,23 @@ void printKernelVersion(){
 		return;
 	}
 
-	puts("\n Versión del kernel: ");
+	puts("Versión del kernel: ");
 	char *line = fgets(buffer, 100, kernelFile);
 
 	char *kernelVersion;
 	const char delim[2] = "(";
 	
 	if((kernelVersion = strstr(line, "Linux version"))!= NULL){
-		printf("   %s",strtok(kernelVersion, delim));
+		printf("   %s\n",strtok(kernelVersion, delim));
 	}
-	puts("\n");
-
 	fclose(kernelFile);
 	return;
 }
 
-/*Cantidad de tiempo transcurrido desde que se 
-inició el sistema operativo (formato ddD hh:mm:ss) */
+/**
+* Cantidad de tiempo transcurrido desde que se 
+* inició el sistema operativo (formato ddD hh:mm:ss)
+*/
 void printUpTime(){
 	FILE* upTimeFile;
 	char buffer[50];
@@ -111,7 +106,7 @@ void printUpTime(){
 		return;
 	}
 
-	puts("\n Tiempo transcurrido desde que se inicio el sistema: ");
+	puts("Tiempo transcurrido desde que se inicio el sistema: ");
 	char *upTime = fgets(buffer, 50, upTimeFile);
 	const char delim[2] = ".";
 	
@@ -136,15 +131,15 @@ void printUpTime(){
 
 		}		
 
-		printf("   %02iD %02i:%02i:%02i",days,hours,minutes,seconds);
+		printf("   %02iD %02i:%02i:%02i\n",days,hours,minutes,seconds);
 	}
-	puts("\n");
-
 	fclose(upTimeFile);
 	return;
 }
 
-//Cantidad de sistemas de archivo soportados por el kernel
+/**
+*Imprime la cantidad de sistemas de archivo soportados por el kernel
+*/
 void printFileSystems(){
 	FILE* fileSystemsFile;
 	char buffer[50];
@@ -162,13 +157,15 @@ void printFileSystems(){
 		if(fileSystem==NULL) { break; }
 		contador ++;
 	}
-	printf("\n Cantidad de sistemas de archivos soportados: %i", contador);
-	puts("\n");
+	printf("Cantidad de sistemas de archivos soportados: %i\n", contador);
 	fclose(fileSystemsFile);
-
 	return;
 }
 
+/**
+*	Imprime en pantalla el tiempo del cpu usado en usuarios, sistema y para procesos idle. Asi como
+*	tambien la cantidad de cambios de contexto.
+*/
 void cpuTime(){
 	FILE* statFile;
 	char buffer[50];
@@ -205,11 +202,14 @@ void cpuTime(){
 			token=strtok(contexto," ");
 			token= strtok(NULL, " ");
 			printf("%s", "Cantidad de cambios de contexto: " );
-			printf("%s", token); // corregir salto de linea
+			printf("%s", token);
 		}
 	}
 }
 
+/**
+*	Imprime en pantalla la fecha de inicio del sistema
+*/
 void initTime(void){
 
 	FILE* upTimeFile;
@@ -217,7 +217,7 @@ void initTime(void){
 	upTimeFile = fopen("/proc/uptime","r");
 
 	if(upTimeFile == NULL){
-		printf("No up time info file found!");
+		printf("No uptime info file found!");
 		fclose(upTimeFile);
 		return;
 	}
@@ -232,21 +232,22 @@ void initTime(void){
 		currentTime = time(NULL);
 
 		currentTime -= seconds;
-		printf("\n La fecha de inicio del sistema es: \n      %s \n", ctime(&currentTime));
+		printf("La fecha de inicio del sistema es: %s", ctime(&currentTime));
 	}
-
 	fclose(upTimeFile);
-
 	return;
 }
 
+/**
+*	Imprime la cantidad de procesos creados al momento de ejecucion.
+*/
 void procCreated(void){
 	FILE* statFile;
 	char buffer[50];
 	statFile = fopen("/proc/stat","r");
 
 	if(statFile==NULL){
-		printf("No file stat file found");
+		printf("No stat file found");
 		fclose(statFile);
 		return;
 	}
@@ -261,12 +262,15 @@ void procCreated(void){
 		if((procesos = strstr(line, "processes"))!= NULL){
 			token=strtok(procesos," ");
 			token= strtok(NULL, " ");
-			printf("%s", "Cantidad de procesos creados desde el inicio del sistema: " );
+			printf("Cantidad de procesos creados desde el inicio del sistema: " );
 			printf("%s", token); // corregir salto de linea
 		}
 	}
 }
 
+/**
+*	Imprime en pantalla los valores de la memoria total del dispositivo y la memoria disponible en el momento de ejecucion.
+*/
 void memStat(void){
 	FILE* statMemory;
 	char buffer[50];
@@ -283,12 +287,12 @@ void memStat(void){
 			break;
 		}
 		char *memtotal;
-		if((memtotal = strstr(line, "MemTotal:"))!= NULL){
+		if((memtotal = strstr(line, "MemTotal:"))!= NULL){ //Busca linea por linea el valor de MemTotal
 			printf("%s", memtotal );
 		}
 
 		char *memdispon;
-		if((memdispon = strstr(line, "MemAvailable:"))!= NULL){
+		if((memdispon = strstr(line, "MemAvailable:"))!= NULL){ //Busca linea por linea el valor de MemAvailable
 			printf("%s", memdispon );
 			return;
 		}		
@@ -297,7 +301,7 @@ void memStat(void){
 }
 
 /**
- * Imprime la cantidad de pedidos a disco
+ * Imprime la cantidad de pedidos a disco. Abarca las lecturas y las escrituras a disco.
  */
 void peticionesHDD(){
 	FILE* pedidosHDD =fopen("/proc/diskstats", "r");
@@ -315,7 +319,7 @@ void peticionesHDD(){
 		if(line==NULL) {
 			break;
 		}
-		if((matched= strstr(line,"sda"))!=NULL){
+		if((matched= strstr(line,"sda"))!=NULL){ //busca la linea que contenga el caracter sda, y luego se suman las lecturas y las escrituras totales.
 			break;
 		}
 	}
@@ -327,19 +331,44 @@ void peticionesHDD(){
 }
 
 /**
- * Imprime lista de promedios de carga de un minuto
+ * Imprime el promedio de carga en un minuto
  */
 void loadAvg(){
 	FILE* promCarga =fopen("/proc/loadavg", "r");	
 	float carga;
 	
 	if(promCarga==NULL){
-		printf("No file diskstats found");
+		printf("No file loadavg found");
 		fclose(promCarga);
 		return;
 	}
-	fscanf(promCarga, "%f", &carga);		
+	fscanf(promCarga, "%f", &carga); //Extrae de la primera columna el valor en punto flotante del promedio en un minuto.
 	printf("Promedio de carga de un minuto: %f\n", carga);
 	fclose(promCarga);
 	return;
+}
+
+void parteB(){
+	printHostname();
+	printDate();
+	printf("----------Información del Equipo----------\n");
+	printCpuInfo();
+	printKernelVersion();
+	printUpTime();
+	printFileSystems();
+	printf("------------------------------------------\n");
+}
+
+void parteC(){
+	cpuTime();
+	initTime();
+	procCreated();
+	printf("------------------------------------------\n");
+}
+
+void parteD(){
+	peticionesHDD();
+	memStat();
+	loadAvg();
+	printf("\n");
 }

@@ -7,3 +7,5 @@ functions.o: functions.c functions.h
 	gcc $(CFLAGS) -c functions.c 
 clean:
 	rm -f *.o ksamp
+static:
+	cppcheck functions.c main.c
