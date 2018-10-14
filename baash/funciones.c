@@ -14,9 +14,7 @@ void prompt () {
 
 void parsePath (char* f[]) {
 	char* var = getenv("PATH");
-
 	f[0] = strtok(var, ":");
-
 	int i = 1;
 	while (f[i-1] != NULL) {
 		f[i] = strtok (NULL, ":");
@@ -28,6 +26,7 @@ void parsePath (char* f[]) {
 int leerCmd (char* argv[], char* input) {
 
 	argv[0] = strtok(input, " \n");
+	//printf("%s\n", input);
 
 	int i = 1;
 	while (argv[i-1] != NULL) {
@@ -41,16 +40,26 @@ void buscarCmd(char* argv, char* paths[], char* cmdFile) {
 	int result;
 	char dirActual[300];
 	char* archivo;
+	//printf("argv:%s\n",argv);
 
 	if (argv[0] == '/' || (argv[0] == '.' && argv[1] == '.' && argv[2] == '/')) {
 		char* dir;
 		char* nextDir;
-		if (argv[0] == '/')
-			strcpy (dirActual, "/");
-		dir = strtok(argv, "/");
-		nextDir = strtok(NULL, "/");
 
-		strcat(dirActual, dir);
+		dir = strtok(argv, "/");
+		printf("argv:%s\n", argv);
+		//printf("Dentro de  ../ o /, esto es dir:%s\n",dir );
+		nextDir = strtok(NULL, "/");
+		//printf("Esto es nextdir:%s\n",nextDir);
+		//printf("Esto es argv[0]:%c\n",argv[0]);
+		if (argv[0] == '/'){
+			strcpy (dirActual, "/");
+			strcat(dirActual, dir);
+		}else{
+			strcpy (dirActual, "..");
+		}
+
+		//printf("Esto es dirActual:%s\n",dirActual );
 
 		while (nextDir != NULL) {
 			dir = nextDir;
@@ -90,15 +99,31 @@ void buscarCmd(char* argv, char* paths[], char* cmdFile) {
 		return;
 	}
 	strcat(dirActual, archivo);
+	//printf("%s\n",dirActual );
 	result = access(dirActual, F_OK);
-	if (!result)
+	//printf("%d\n",!result);
+	if (!result){
 		strcpy(cmdFile, dirActual);
+	}
 	else
 		cmdFile[0] = 'X';
 }
 
 void crearProc (char* cmdFile, char* argV[]) {
 	int pid, wait;
+	int isConcurrent = 0;
+	int i;
+	
+	for (i = 0; argV[i] != NULL; i++);
+	{printf("argumentos del comando:%i\n",i );}
+	
+	for(int z=0;argV[z]!=NULL;z++)
+		{printf("no se que es:%s\n",argV[z]);}
+	
+	if (!strcmp(argV[i-1], "&")){
+		printf("Soy concurrente\n");
+		isConcurrent = 1;
+	}
 
 	pid = fork();
 	if (pid < 0) {
@@ -110,5 +135,7 @@ void crearProc (char* cmdFile, char* argV[]) {
 		perror(cmdFile);
 		exit(1);
 	}
+	else if (isConcurrent)
+		return;
 	waitpid (pid, &wait, 0);
 }

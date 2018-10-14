@@ -10,7 +10,7 @@ int main () {
 	char cmdFile[300];
 	char *paths[20];
 	char *argV[300];
- 
+	
 	parsePath (paths);
 
 	while (1) {
@@ -19,7 +19,7 @@ int main () {
 		argC = leerCmd (argV, cmd);
 
 		if (argC == 0) {
-			printf("\n");
+			printf("Escriba un comando\n");
 			continue;
 		}
 
@@ -27,6 +27,8 @@ int main () {
 			if (!strcmp (cmd, "exit"))
 				return 0;
 			if (!strcmp (cmd, "cd")) {
+				//printf("%s\n",argV[1] );
+				//printf("%s\n", argV[0]);
 				int i = chdir (argV[1]);
 				if (i != 0)
 					printf ("El directorio no es correcto.\n");
